@@ -302,7 +302,7 @@ pub fn resolve_execution_mode(
     }
 
     // Try to load from config
-    let config = Config::load().context("Failed to load config")?;
+    let config = Config::load();
 
     if let Some((server_url, token)) = config.resolve_connection(server_arg, token_arg)? {
         Ok(ExecutionMode::Remote { server_url, token })
@@ -324,8 +324,7 @@ pub fn resolve_ydoc_available(
         return None;
     }
     Config::load()
-        .ok()
-        .and_then(|c| c.connection)
+        .connection
         .and_then(|c| c.ydoc_available)
 }
 

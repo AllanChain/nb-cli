@@ -147,8 +147,7 @@ async fn execute_async(args: ConnectArgs) -> Result<()> {
     };
 
     // Save config
-    let mut config = Config::load().unwrap_or_default();
-    config.version = "1".to_string();
+    let mut config = Config::load();
     config.connection = Some(connection);
 
     let _config_path = config.save()?;
@@ -228,8 +227,7 @@ async fn connect_manual(server_url: String, token: String, skip_validation: bool
     };
 
     // Save config
-    let mut config = Config::load().unwrap_or_default();
-    config.version = "1".to_string();
+    let mut config = Config::load();
     config.connection = Some(connection);
 
     let _config_path = config.save()?;

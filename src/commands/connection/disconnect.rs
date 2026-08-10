@@ -1,12 +1,12 @@
 use crate::config::Config;
-use anyhow::{Context, Result};
+use anyhow::Result;
 use clap::Args;
 
 #[derive(Args)]
 pub struct DisconnectArgs {}
 
 pub fn execute(_args: DisconnectArgs) -> Result<()> {
-    let mut config = Config::load().context("Failed to load config")?;
+    let mut config = Config::load();
 
     if config.connection.is_none() {
         println!("Not connected to any Jupyter server");

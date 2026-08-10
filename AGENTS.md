@@ -49,6 +49,33 @@ direct measurement (still stale at +0.7s, cleared by +1.7s). This is a
 because externalized output files get unconditionally re-materialized into
 the notebook on every save) — don't conflate the two if either gets fixed.
 
+## Connection store (`~/.config/nb/connections.json`) keys connections by project root
+
+`nb connect` records the connection in the user's connection store
+(`~/.config/nb/connections.json`, dir overridable with `NB_CONFIG_HOME`),
+keyed by the canonical project root where it ran. `Config::load` resolves the
+connection for the cwd by taking the recorded root that is the longest
+component-wise ancestor-or-equal of the cwd (`Path::starts_with` semantics,
+so `/a/b` never matches `/a/bc`); `Config::save` writes back under that same
+root (or the cwd when no entry matches), so connecting from a subdirectory
+updates the project connection. This is why running `nb` in a notebook subdir
+still uses the project connection. A `None` connection removes the entry
+(`nb disconnect`).
+
+Security: the store lives in the user's home, never in the project tree — no
+token is written into (and no connection is read from) files that ship with a
+repository. Any file the user materializes (a git checkout, an extracted
+archive) becomes user-owned with mode 0644, so a connection file shipped
+inside a cloned repo would pass every ownership/permission check and silently
+redirect `nb` at an attacker's server — and `nb connect` would write the real
+token into the repo. The store avoids the whole class by never consulting
+project files. The trust checks remain for the store `nb` does consult: it
+must be a regular file (lstat, so symlinks are rejected), owned by the current
+uid, and not group/world-writable; `load` re-checks via fstat on the opened fd
+(that fstat is the only TOCTOU measure, don't add directory-level checks
+back), and `save` refuses to overwrite an existing file that fails the checks.
+`libc` is a Unix-only dependency for `getuid`.
+
 ## Remote mode and server base_url
 
 `nb connect` stores the server URL exactly as given, including any base_url

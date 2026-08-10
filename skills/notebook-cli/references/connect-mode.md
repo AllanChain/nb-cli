@@ -13,7 +13,7 @@ nb connect --pixi
 Auto-detection is preferred. Use `--uv` or `--pixi` when Jupyter is running inside that project environment.
 Do not put Jupyter authentication tokens in agent-authored commands, prompts, logs, or examples. If auto-detection cannot find the server, ask the user to run the manual `nb connect` command themselves.
 
-Connection info is saved in `.jupyter/cli.json` in the current directory. Later `nb` commands use that saved connection automatically.
+Connection info is stored per project in `~/.config/nb/connections.json` (override the directory with `NB_CONFIG_HOME`), keyed by the directory where `nb connect` ran. Later `nb` commands run from any subdirectory use that project connection automatically. Connections never live inside the project tree, so a config committed to a cloned repo cannot redirect `nb`.
 
 ## Check and Use the Connection
 

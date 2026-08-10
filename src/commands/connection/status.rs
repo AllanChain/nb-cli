@@ -1,7 +1,7 @@
 use crate::config::Config;
 use crate::execution::env::EnvManager;
 use crate::execution::server::client::JupyterClient;
-use anyhow::{Context, Result};
+use anyhow::Result;
 use clap::Args;
 
 #[derive(Args)]
@@ -20,7 +20,7 @@ pub struct StatusArgs {
 }
 
 pub fn execute(args: StatusArgs) -> Result<()> {
-    let config = Config::load().context("Failed to load config")?;
+    let config = Config::load();
 
     match config.connection {
         None => {

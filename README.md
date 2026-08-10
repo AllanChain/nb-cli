@@ -187,7 +187,19 @@ If auto-detection cannot find the server, run `nb connect --help` and provide th
 
 ### Connection Persistence
 
-Connection info is saved in `.jupyter/cli.json` in the current directory. All subsequent commands automatically use this connection until you disconnect or change directories.
+Connections are stored per project in `~/.config/nb/connections.json`
+(override the directory with `NB_CONFIG_HOME`), keyed by the directory where
+you ran `nb connect`. Commands run from anywhere under that directory —
+including subdirectories — automatically use the project connection, so an
+agent working in `notebooks/2024/` keeps using the project server instead of
+silently falling back to direct disk edits (which would desync the notebook
+from a collaboration backend). Connecting from a subdirectory updates the
+project's connection; all commands use it until you disconnect.
+
+Security: the store lives in your home directory, never inside the project, so
+no token is written into — and no connection is read from — files that ship
+with a repository. A config committed to a repo you clone can therefore never
+redirect `nb` at an attacker's server.
 
 ```bash
 # Connect once (auto-detect)

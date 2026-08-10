@@ -55,5 +55,10 @@ crossterm = "0.29"
 syntect = "5.2"
 notify = "8.2"
 
+# Unix trust checks for the connection store
+# (uid/permission validation)
+[target.'cfg(unix)'.dependencies]
+libc = "0.2"
+
 [dev-dependencies]
 tempfile = "3.8"

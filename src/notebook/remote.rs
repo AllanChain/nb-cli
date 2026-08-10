@@ -12,8 +12,7 @@ use crate::execution::types::ExecutionMode;
 /// Returns None for manual connections or when no config exists.
 pub fn resolve_server_root() -> Option<String> {
     Config::load()
-        .ok()
-        .and_then(|c| c.connection)
+        .connection
         .and_then(|c| c.working_dir)
 }
 
@@ -120,8 +119,9 @@ mod tests {
 
     /// Minimal Contents API stub: serves GET with a valid one-cell notebook and
     /// answers PUT with the given status, recording every PUT body.
-    /// Note: with_contents_api also calls Config::load() from the process cwd,
-    /// which may pick up a developer-local ./.jupyter/cli.json and change the
+    /// Note: with_contents_api also calls Config::load() from the process cwd
+    /// (which resolves the project connection from the user's connection
+    /// store), which may pick up a developer-local connection and change the
     /// request path; the tests are insulated because this stub ignores the
     /// request path entirely.
     async fn contents_api_stub(put_status: u16) -> ContentsStub {

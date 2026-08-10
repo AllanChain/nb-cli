@@ -1854,6 +1854,7 @@ dependencies = [
  "dirs",
  "futures-util",
  "jupyter-protocol",
+ "libc",
  "nbformat",
  "notify",
  "ratatui",
